@@ -1,0 +1,21 @@
+services:
+    openswoole-crud-api:
+      container_name: openswoole-crud-api
+      build: .
+      ports:
+        - "31011:9501"
+      volumes:
+        - ~/place/of/html:/var/www/html
+      environment:
+        - DRIVER=mysql
+        - MYSQL_HOST=192.168.0.1
+        - MYSQL_PORT=3306
+        - MYSQL_USER=myusermysql
+        - MYSQL_PASSWORD=mypassword
+        - MYSQL_DATABASE=mydatabase
+        - SECRET-KEY=mysecret-key
+        - SERVER_ACCESS_IP=0.0.0.0
+        - SERVER_ACCESS_PORT=9501
+        - TZ=Asia/Jakarta
+        - NUM_PROSES=4
+      network_mode: bridge
