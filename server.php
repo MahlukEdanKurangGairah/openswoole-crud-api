@@ -82,7 +82,7 @@ function clearStaticProperties() {
   }
 }
 
-function handle2($request,$response){
+function handleRequest($request,$response){
   global $api;
   try {
     $queryString = $request->server['query_string'] ?? '';
