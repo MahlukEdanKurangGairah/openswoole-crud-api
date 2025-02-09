@@ -11,6 +11,20 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 require __DIR__.'/vendor/autoload.php';
 ini_set('memory_limit', '512M');
 date_default_timezone_set('Asia/Jakarta');
+
+function clearStaticProperties() {
+  $classes = get_declared_classes();
+  foreach ($classes as $class) {
+    $reflection = new ReflectionClass($class);
+    $statics = $reflection->getProperties(ReflectionProperty::IS_STATIC);
+    foreach ($statics as $static) {
+      if ($static->isPublic()) {
+        $static->setValue(null);
+      }
+    }
+  }
+}
+
 $host_api = getenv('SERVER_ACCESS_IP');
 $host_port =(int) getenv('SERVER_ACCESS_PORT');
 
@@ -65,24 +79,9 @@ $server->on('workerExit', function($server, $workerId) {
   clearStaticProperties();
 });
  
-$server->on('Request', function(Request $request, Response $response){
-  handleRequest($request,$response);
-});
+$server->on('Request', $handleRequest);
 
-function clearStaticProperties() {
-  $classes = get_declared_classes();
-  foreach ($classes as $class) {
-    $reflection = new ReflectionClass($class);
-    $statics = $reflection->getProperties(ReflectionProperty::IS_STATIC);
-    foreach ($statics as $static) {
-      if ($static->isPublic()) {
-        $static->setValue(null);
-      }
-    }
-  }
-}
-
-function handleRequest($request,$response){
+$handleRequest = function(Request $request, Response $response){
   global $api;
   try {
     $queryString = $request->server['query_string'] ?? '';
