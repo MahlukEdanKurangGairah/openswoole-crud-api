@@ -120,5 +120,5 @@ $handleRequest = function(Request $request, Response $response){
       gc_collect_cycles();
     }
   }
-}
+};
 $server->start();
